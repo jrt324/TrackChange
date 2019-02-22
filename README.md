@@ -53,6 +53,12 @@ public class Class3
 [Tracking]
 public class Class3 : ITrackable
 {
+    [NonSerialized]
+    public virtual bool IsTracking { get; set; }
+
+    [NonSerialized]
+    public virtual Dictionary<string, bool> ModifiedProperties { get; set; } = new Dictionary<string, bool>();
+
     public DateTime? Prop1
     {
         [CompilerGenerated]
@@ -133,11 +139,7 @@ public class Class3 : ITrackable
         }
     }
 
-    [NonSerialized]
-    public virtual bool IsTracking { get; set; }
 
-    [NonSerialized]
-    public virtual Dictionary<string, bool> ModifiedProperties { get; set; } = new Dictionary<string, bool>();
 }
 
 ```
