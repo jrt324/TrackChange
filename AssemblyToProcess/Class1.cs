@@ -57,19 +57,15 @@ namespace AssemblyToProcess
     [Tracking]
     public class Class3
     {
-
+  
         public DateTime? Prop1 { get; set; }
 
-        public List<string> Prop2 { get; set; }
-
+    
         public string Test2 { get; set; }
 
         public int IntVal1 { get; set; }
         public int? IntVal2 { get; set; }
 
-        public Class3()
-        {
-        }
     }
 
 
