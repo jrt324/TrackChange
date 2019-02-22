@@ -1,8 +1,5 @@
-﻿
 # TrackChange
-
-
-## This is an add-in for [Fody](https://github.com/Fody/Home/)
+This is an add-in for [Fody](https://github.com/Fody/Home/)
 Tracking POCO properties changes , easy to access what properties changed.
 
 TrackChange will Process any POCO class has  `TrackingAttribute`.
