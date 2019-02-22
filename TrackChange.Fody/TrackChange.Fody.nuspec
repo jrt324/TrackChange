@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>TrackChange.Fody</id>
+    <version>$version$</version>
+    <title>TrackChange.Fody</title>
+    <authors>JRT</authors>
+    <owners>JRT</owners>
+    <developmentDependency>true</developmentDependency>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>http://github.com/jrt324/TrackChange</projectUrl>
+    <iconUrl>https://raw.github.com/Fody/Fody/master/package_icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Fody add-in for tracking the properties of POCO object changes , easy checking which properties have been changed.</description>
+    <language>en-AU</language>
+    <tags>Properties, TrackChange, POCO, ILWeaving, Fody, Cecil</tags>
+    <dependencies>
+      <dependency id="Fody" version="2.*"/>
+    </dependencies>
+  </metadata>
+</package>

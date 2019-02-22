@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net452;netstandard1.0</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+
+    <Authors>JRT</Authors>
+    <Description>Tracking POCO properties changes , easy to access what properties changed..</Description>
+    <PackageTags>ILWeaving, Fody, Cecil, AOP, TrackChange</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="3.3.5" PrivateAssets="None" />
+    <PackageReference Include="FodyPackaging" Version="3.3.5" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>
