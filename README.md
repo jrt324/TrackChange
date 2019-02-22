@@ -30,8 +30,7 @@ public interface ITrackable
 # Installation
 
 ```powershell
-PM> Install-Package Fody
-PM> Install-Package PropertyChanging.Fody
+PM> Install-Package TrackChange.Fody
 ```
 
 
