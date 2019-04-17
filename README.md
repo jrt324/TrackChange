@@ -5,7 +5,7 @@ Tracking POCO properties changes , easy to access what properties changed.
 
 TrackChange will process any POCO class that mark as `TrackingAttribute`.
 
-All trackable POCOs will be inject to implement `ITrackable` iterface , you can copy follow `ITrackable` iterface file in your project
+All trackable POCOs will be inject to implement `ITrackable` iterface , you can copy follow code in your project
 
 ```csharp
 public class TrackingAttribute : Attribute
