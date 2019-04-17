@@ -3,7 +3,7 @@ This is an add-in for [Fody](https://github.com/Fody/Home/).
 
 Tracking POCO properties changes , easy to access what properties changed.
 
-TrackChange will Process any POCO class has  `TrackingAttribute`.
+TrackChange will process any POCO class that mark as `TrackingAttribute`.
 
 All trackable POCOs will be inject to implement `ITrackable` iterface , you can copy follow `ITrackable` iterface file in your project
 
@@ -33,7 +33,7 @@ public interface ITrackable
 PM> Install-Package TrackChange.Fody
 ```
 
-
+# How it works
 ### Your Code
 
 ```csharp
