@@ -1,8 +1,6 @@
-﻿
 # TrackChange
+This is an add-in for [Fody](https://github.com/Fody/Home/). 
 
-
-## This is an add-in for [Fody](https://github.com/Fody/Home/)
 Tracking POCO properties changes , easy to access what properties changed.
 
 TrackChange will Process any POCO class has  `TrackingAttribute`.
@@ -32,8 +30,7 @@ public interface ITrackable
 # Installation
 
 ```powershell
-PM> Install-Package Fody
-PM> Install-Package PropertyChanging.Fody
+PM> Install-Package TrackChange.Fody
 ```
 
 
@@ -55,6 +52,12 @@ public class Class3
 [Tracking]
 public class Class3 : ITrackable
 {
+    [NonSerialized]
+    public virtual bool IsTracking { get; set; }
+
+    [NonSerialized]
+    public virtual Dictionary<string, bool> ModifiedProperties { get; set; } = new Dictionary<string, bool>();
+
     public DateTime? Prop1
     {
         [CompilerGenerated]
@@ -135,11 +138,7 @@ public class Class3 : ITrackable
         }
     }
 
-    [NonSerialized]
-    public virtual bool IsTracking { get; set; }
 
-    [NonSerialized]
-    public virtual Dictionary<string, bool> ModifiedProperties { get; set; } = new Dictionary<string, bool>();
 }
 
 ```
