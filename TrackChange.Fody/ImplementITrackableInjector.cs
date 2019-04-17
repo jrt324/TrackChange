@@ -10,6 +10,7 @@ using MethodAttributes = Mono.Cecil.MethodAttributes;
 using ParameterAttributes = Mono.Cecil.ParameterAttributes;
 using PropertyAttributes = Mono.Cecil.PropertyAttributes;
 using TypeSystem = Mono.Cecil.TypeSystem;
+using System;
 
 public class ImplementITrackableInjector
 {
@@ -84,14 +85,11 @@ public class ImplementITrackableInjector
             var dicTypeDefinition = dicPropTypeRef.Resolve();
 
             // Add IsTracking property
-            FieldDefinition isTrackingFieldDefinition = null;
-            var isTrackingPropRef = InjectProperty(type, "IsTracking", typeSystem.Boolean, true, ref isTrackingFieldDefinition);
-            isTrackingPropRef.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
+            var isTrackingProp = InjectProperty(type, "IsTracking", typeSystem.Boolean, true);
 
             // Add ModifiedProperties property
-            FieldDefinition modifiedPropertiesFieldRef = null;
-            var modifiedPropertiesPropRef = InjectProperty(type, "ModifiedProperties", dicPropTypeRef, true, ref modifiedPropertiesFieldRef);
-            modifiedPropertiesPropRef.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
+            var modifiedPropertiesProp = InjectProperty(type, "ModifiedProperties", dicPropTypeRef, true);
+
 
             // Implement the ITrackable interface
             if (trackInterfaceImplementation == null)
@@ -100,30 +98,30 @@ public class ImplementITrackableInjector
             }
             type.Interfaces.Add(trackInterfaceImplementation);
 
-
-            var dicCtor = dicTypeDefinition.GetConstructors().SingleOrDefault(c => c.Parameters.Count == 0);
-
-            var dicConstructorInfoRef = type.Module.ImportReference(dicCtor);
-            dicConstructorInfoRef = dicConstructorInfoRef.MakeGeneric(typeSystem.String, typeSystem.Boolean);
-
-
-            var currentTypeCtor = type.GetConstructors().SingleOrDefault(c => c.Parameters.Count == 0);
-
-            if (currentTypeCtor != null)
+            if (modifiedPropertiesProp.Field != null)
             {
-                var processor = currentTypeCtor.Body.GetILProcessor();
-                var firstInstruction = currentTypeCtor.Body.Instructions[1];
+                var dicCtor = dicTypeDefinition.GetConstructors().SingleOrDefault(c => c.Parameters.Count == 0);
 
-                var instructions = new List<Instruction>() {
-                    processor.Create(OpCodes.Ldarg_0),
-                    processor.Create(OpCodes.Newobj, dicConstructorInfoRef),
-                    processor.Create(OpCodes.Stfld, modifiedPropertiesFieldRef),
+                var dicConstructorInfoRef = type.Module.ImportReference(dicCtor);
+                dicConstructorInfoRef = dicConstructorInfoRef.MakeGeneric(typeSystem.String, typeSystem.Boolean);
 
-                };
+                var currentTypeCtor = type.GetConstructors().SingleOrDefault(c => c.Parameters.Count == 0);
 
-                foreach (var instruction in instructions)
+                if (currentTypeCtor != null)
                 {
-                    processor.InsertBefore(firstInstruction, instruction);
+                    var processor = currentTypeCtor.Body.GetILProcessor();
+                    var firstInstruction = currentTypeCtor.Body.Instructions[1];
+
+                    var instructions = new List<Instruction>() {
+                        processor.Create(OpCodes.Ldarg_0),
+                        processor.Create(OpCodes.Newobj, dicConstructorInfoRef),
+                        processor.Create(OpCodes.Stfld, modifiedPropertiesProp.Field),
+                    };
+
+                    foreach (var instruction in instructions)
+                    {
+                        processor.InsertBefore(firstInstruction, instruction);
+                    }
                 }
             }
 
@@ -212,7 +210,7 @@ public class ImplementITrackableInjector
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
 
                     //IL_0022: call instance class [mscorlib]System.Collections.Generic.Dictionary`2<string, bool> AssemblyToProcess.Class1::get_ModifiedProperties()
-                    ins1.Add(Instruction.Create(OpCodes.Call, modifiedPropertiesPropRef.GetMethod));
+                    ins1.Add(Instruction.Create(OpCodes.Call, modifiedPropertiesProp.Prop.GetMethod));
 
                     //IL_0027: ldstr "Prop1"
                     ins1.Add(Instruction.Create(OpCodes.Ldstr, property.Name));
@@ -253,7 +251,24 @@ public class ImplementITrackableInjector
         }
     }
 
-    private PropertyDefinition InjectProperty(TypeDefinition typeDefinition, string propName, TypeReference propType, bool isPublic, ref FieldDefinition refField)
+    public class PropAndField
+    {
+        public PropertyDefinition Prop { get; set; }
+        public FieldDefinition Field { get; set; }
+
+        public PropAndField()
+        {
+
+        }
+
+        public PropAndField(PropertyDefinition prop, FieldDefinition field)
+        {
+            this.Prop = prop;
+            this.Field = field;
+        }
+    }
+
+    private PropAndField InjectProperty(TypeDefinition typeDefinition, string propName, TypeReference propType, bool isPublic)
     {
         var name = propName;
         if (typeDefinition.HasGenericParameters)
@@ -264,6 +279,40 @@ public class ImplementITrackableInjector
             return null;
         }
 
+        // 获取本类或基类是否存在 相同的属性
+        Func<TypeDefinition, PropAndField> GetExistProp = null;
+        GetExistProp = (TypeDefinition type) =>
+        {
+            try
+            {
+                var prop = type.Properties.SingleOrDefault(p => p.Name == propName);
+                if (prop != null)
+                {
+                    return new PropAndField(prop, null);
+                }
+                else
+                {
+                    if (type.BaseType.FullName != "System.Object")
+                    {
+                        var baseType = type.BaseType.Resolve();
+                        return GetExistProp(baseType);
+                    }
+                }
+            }
+            catch (System.Exception ex1)
+            {
+                var ss = ex1.Message;
+            }
+
+            return null;
+        };
+
+
+        var result = GetExistProp(typeDefinition);
+        if (result != null)
+        {
+            return result;
+        }
 
         FieldDefinition field = new FieldDefinition(name, FieldAttributes.Private, propType);
         field.Name = $"<{name}>k__BackingField";
@@ -297,8 +346,7 @@ public class ImplementITrackableInjector
 
         typeDefinition.Properties.Add(propertyDefinition);
         propertyDefinition.HasThis = false;
-        refField = field;
-        return propertyDefinition;
+        return new PropAndField(propertyDefinition, field);
     }
 
     private MethodDefinition InjectPropertyGet(FieldDefinition field, string name, bool isPublic = true)

@@ -31,5 +31,16 @@ public class WeaverTests
         Assert.True(changes.ContainsKey("IntVal1"));
         Assert.True(changes.ContainsKey("IntVal2"));
     }
+
+    [Fact]
+    public void ValidateInherited()
+    {
+        var instance = testResult.GetInstance("AssemblyToProcess.InheritedClass");
+        instance.BaseProp1 = "ddd";
+
+        Dictionary<string, bool> changes = instance.ModifiedProperties;
+        Assert.True(changes.ContainsKey("BaseProp1"));
+   
+    }
 }
 #endregion
