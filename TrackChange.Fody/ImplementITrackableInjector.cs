@@ -33,9 +33,35 @@ public class ImplementITrackableInjector
         this._allPocoTypes = allPocoTypes;
     }
 
+
+    private static IEnumerable<TypeDefinition> GetHierarchy(TypeDefinition type)
+    {
+        while (type != null)
+        {
+            yield return type;
+            if (type.BaseType == null)
+            {
+                type = null;
+            }
+            else
+            {
+                try
+                {
+                    type = type.BaseType?.Resolve();
+                }
+                catch (Exception ex)
+                {
+                    var msg = ex.Message;
+                    type = null;
+                }
+            }
+        }
+    }
+
     public void Execute()
     {
-        foreach (var type in _allPocoTypes)
+        var orderdPocoTypes = _allPocoTypes.OrderBy(t => GetHierarchy(t).Count()).ToList();
+        foreach (var type in orderdPocoTypes)
         {
             if (!type.IsInterface && !type.IsValueType && !type.IsEnum)
             {
@@ -44,6 +70,11 @@ public class ImplementITrackableInjector
         }
     }
 
+    public bool HasInterface(TypeDefinition type, string interfaceFullName)
+    {
+        return (type.Interfaces.Any(i => i.InterfaceType.FullName.Equals(interfaceFullName))
+                || type.NestedTypes.Any(t => HasInterface(t, interfaceFullName)));
+    }
 
     /// <summary>
     /// Process POCO Type implement ITrackable interface
@@ -62,6 +93,9 @@ public class ImplementITrackableInjector
             {
                 return;
             }
+
+            
+
 
             if (trackableTypeRef == null)
             {
@@ -86,9 +120,11 @@ public class ImplementITrackableInjector
 
             // Add IsTracking property
             var isTrackingProp = InjectProperty(type, "IsTracking", typeSystem.Boolean, true);
+            isTrackingProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
 
             // Add ModifiedProperties property
             var modifiedPropertiesProp = InjectProperty(type, "ModifiedProperties", dicPropTypeRef, true);
+            modifiedPropertiesProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
 
 
             // Implement the ITrackable interface

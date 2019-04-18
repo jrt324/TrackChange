@@ -14,7 +14,7 @@ public class WeaverTests
     static WeaverTests()
     {
         var weavingTask = new ModuleWeaver();
-        testResult = weavingTask.ExecuteTestRun(@"AssemblyToProcess.dll",runPeVerify:false);
+        testResult = weavingTask.ExecuteTestRun(@"AssemblyToProcess.dll", runPeVerify: false);
         // testResult = weavingTask.ExecuteTestRun(@"Dyhs.SmartWater.Domain.dll", runPeVerify:false);
     }
 
@@ -40,7 +40,16 @@ public class WeaverTests
 
         Dictionary<string, bool> changes = instance.ModifiedProperties;
         Assert.True(changes.ContainsKey("BaseProp1"));
-   
+
+    }
+
+    [Fact]
+    public void ValidateInterfacePropsMarkAsNonSerialized()
+    {
+        var instance = testResult.GetInstance("AssemblyToProcess.Class3");
+        var type = testResult.Assembly.GetType("AssemblyToProcess.Class3");
+        var attrs = type.GetProperty("ModifiedProperties").GetCustomAttributes(typeof(NonSerializedAttribute), true);
+        Assert.True(attrs.Length == 1);
     }
 }
 #endregion

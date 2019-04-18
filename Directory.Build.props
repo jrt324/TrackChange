@@ -4,7 +4,7 @@
     <Copyright>Copyright 靳如坦 2018. Distributed under the MIT License.</Copyright>
     <Description>Tracking POCO properties changes , easy to access what properties changed.</Description>
     <Product>TrackChange.Fody</Product>
-    <Version>1.0.7</Version>
+    <Version>1.1.0</Version>
 
     <PackageProjectUrl>http://github.com/jrt324/TrackChange</PackageProjectUrl>
     <PackageIconUrl>https://raw.github.com/Fody/Fody/master/package_icon.png</PackageIconUrl>
