@@ -14,8 +14,8 @@ public class WeaverTests
     static WeaverTests()
     {
         var weavingTask = new ModuleWeaver();
+    
         testResult = weavingTask.ExecuteTestRun(@"AssemblyToProcess.dll", runPeVerify: false);
-        // testResult = weavingTask.ExecuteTestRun(@"Dyhs.SmartWater.Domain.dll", runPeVerify:false);
     }
 
 

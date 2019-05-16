@@ -94,9 +94,6 @@ public class ImplementITrackableInjector
                 return;
             }
 
-            
-
-
             if (trackableTypeRef == null)
             {
                 var bronzeAssam = attr.AttributeType.Module.Assembly;
@@ -120,12 +117,17 @@ public class ImplementITrackableInjector
 
             // Add IsTracking property
             var isTrackingProp = InjectProperty(type, "IsTracking", typeSystem.Boolean, true);
-            isTrackingProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
+            if (!isTrackingProp.FromBaseClass)
+            {
+                isTrackingProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
+            }
 
             // Add ModifiedProperties property
             var modifiedPropertiesProp = InjectProperty(type, "ModifiedProperties", dicPropTypeRef, true);
-            modifiedPropertiesProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
-
+            if (!modifiedPropertiesProp.FromBaseClass)
+            {
+                modifiedPropertiesProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
+            }
 
             // Implement the ITrackable interface
             if (trackInterfaceImplementation == null)
@@ -246,7 +248,9 @@ public class ImplementITrackableInjector
                     ins1.Add(Instruction.Create(OpCodes.Ldarg_0));
 
                     //IL_0022: call instance class [mscorlib]System.Collections.Generic.Dictionary`2<string, bool> AssemblyToProcess.Class1::get_ModifiedProperties()
-                    ins1.Add(Instruction.Create(OpCodes.Call, modifiedPropertiesProp.Prop.GetMethod));
+
+                    var getModifiedPropertiesMethod = moduleWeaver.ModuleDefinition.ImportReference(modifiedPropertiesProp.Prop.GetMethod);
+                    ins1.Add(Instruction.Create(OpCodes.Call, getModifiedPropertiesMethod));
 
                     //IL_0027: ldstr "Prop1"
                     ins1.Add(Instruction.Create(OpCodes.Ldstr, property.Name));
@@ -289,6 +293,8 @@ public class ImplementITrackableInjector
 
     public class PropAndField
     {
+        public bool FromBaseClass { get; set; }
+
         public PropertyDefinition Prop { get; set; }
         public FieldDefinition Field { get; set; }
 
@@ -297,10 +303,11 @@ public class ImplementITrackableInjector
 
         }
 
-        public PropAndField(PropertyDefinition prop, FieldDefinition field)
+        public PropAndField(PropertyDefinition prop, FieldDefinition field, bool fromBaseClass)
         {
             this.Prop = prop;
             this.Field = field;
+            this.FromBaseClass = fromBaseClass;
         }
     }
 
@@ -324,7 +331,7 @@ public class ImplementITrackableInjector
                 var prop = type.Properties.SingleOrDefault(p => p.Name == propName);
                 if (prop != null)
                 {
-                    return new PropAndField(prop, null);
+                    return new PropAndField(prop, null, true);
                 }
                 else
                 {
@@ -382,7 +389,7 @@ public class ImplementITrackableInjector
 
         typeDefinition.Properties.Add(propertyDefinition);
         propertyDefinition.HasThis = false;
-        return new PropAndField(propertyDefinition, field);
+        return new PropAndField(propertyDefinition, field, false);
     }
 
     private MethodDefinition InjectPropertyGet(FieldDefinition field, string name, bool isPublic = true)

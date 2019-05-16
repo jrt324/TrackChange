@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj" />
+    <ProjectReference Include="..\ClassLibrary1\TestBaseClassLib.csproj" />
     <ProjectReference Include="..\TrackChange.Fody\TrackChange.Fody.csproj" />
   </ItemGroup>
 
