@@ -1,4 +1,8 @@
 # TrackChange
+
+[![NuGet](https://buildstats.info/nuget/TrackChange.Fody)](https://www.nuget.org/packages/TrackChange.Fody/)
+[![License MIT](https://img.shields.io/badge/license-MIT-green.svg)](http://opensource.org/licenses/MIT)
+
 This is an add-in for [Fody](https://github.com/Fody/Home/). 
 
 Tracking POCO properties changes , easy to access what properties changed.
