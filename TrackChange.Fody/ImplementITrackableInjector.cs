@@ -120,6 +120,10 @@ public class ImplementITrackableInjector
             if (!isTrackingProp.FromBaseClass)
             {
                 isTrackingProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
+                if (msCoreReferenceFinder.NotMappedAttributeReference!=null)
+                {
+                    isTrackingProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NotMappedAttributeReference));
+                }
             }
 
             // Add ModifiedProperties property
@@ -127,6 +131,10 @@ public class ImplementITrackableInjector
             if (!modifiedPropertiesProp.FromBaseClass)
             {
                 modifiedPropertiesProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
+                if (msCoreReferenceFinder.NotMappedAttributeReference != null)
+                {
+                    modifiedPropertiesProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NotMappedAttributeReference));
+                }
             }
 
             // Implement the ITrackable interface

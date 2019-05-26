@@ -29,6 +29,7 @@ public class ModuleWeaver: BaseModuleWeaver
         yield return "System.Collections";
         yield return "System.ObjectModel";
         yield return "System.Threading";
+        yield return "System.ComponentModel.DataAnnotations";
     }
 
     public override bool ShouldCleanReference => true;
