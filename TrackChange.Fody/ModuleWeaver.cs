@@ -30,6 +30,7 @@ public class ModuleWeaver: BaseModuleWeaver
         yield return "System.ObjectModel";
         yield return "System.Threading";
         yield return "System.ComponentModel.DataAnnotations";
+        yield return "System.Text.Json";
     }
 
     public override bool ShouldCleanReference => true;

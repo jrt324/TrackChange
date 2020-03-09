@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
+#pragma warning disable 168
 
 public class MsCoreReferenceFinder
 {
@@ -13,7 +14,7 @@ public class MsCoreReferenceFinder
     public MethodReference NonSerializedReference;
 
     public MethodReference NotMappedAttributeReference;
-
+    public MethodReference JsonIgnoreAttributeReference;
 
     public MsCoreReferenceFinder(ModuleWeaver moduleWeaver, IAssemblyResolver assemblyResolver)
     {
@@ -24,25 +25,35 @@ public class MsCoreReferenceFinder
     {
         var module = _moduleWeaver.ModuleDefinition;
 
-        var compilerGeneratedDefinition = _moduleWeaver.FindType("System.Runtime.CompilerServices.CompilerGeneratedAttribute");
-        CompilerGeneratedReference = module.ImportReference(compilerGeneratedDefinition.Resolve().Methods.First(x => x.IsConstructor));
+        CompilerGeneratedReference = GetTypeCtorReference(module, "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
+        NonSerializedReference = GetTypeCtorReference(module, "System.NonSerializedAttribute");
+        NotMappedAttributeReference = GetTypeCtorReference(module, "System.ComponentModel.DataAnnotations.Schema.NotMappedAttribute");
+        JsonIgnoreAttributeReference = GetTypeCtorReference(module, "System.Text.Json.Serialization.JsonIgnoreAttribute");
 
-        var nonSerializedReference = _moduleWeaver.FindType("System.NonSerializedAttribute");
-        NonSerializedReference = module.ImportReference(nonSerializedReference.Resolve().Methods.First(x => x.IsConstructor));
+    }
 
-        var notMappedAttributeReference = _moduleWeaver.FindType("System.ComponentModel.DataAnnotations.Schema.NotMappedAttribute");
-        if (notMappedAttributeReference!=null)
+    public MethodReference GetTypeCtorReference(ModuleDefinition module, string fullTypeName)
+    {
+        try
         {
-            try
+            var typeReference = _moduleWeaver.FindType(fullTypeName);
+            if (typeReference != null)
             {
-                NotMappedAttributeReference = module.ImportReference(notMappedAttributeReference.Resolve().Methods.First(x => x.IsConstructor));
-            }
-            catch 
-            {
+                try
+                {
+                    var ctorReference = module.ImportReference(typeReference.Resolve().Methods.First(x => x.IsConstructor));
+                    return ctorReference;
+                }
+                catch
+                {
+                }
             }
         }
-        
+        catch (Exception ex1)
+        {
+        }
 
+        return null;
     }
 
 

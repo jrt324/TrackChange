@@ -120,9 +120,9 @@ public class ImplementITrackableInjector
             if (!isTrackingProp.FromBaseClass)
             {
                 isTrackingProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
-                if (msCoreReferenceFinder.NotMappedAttributeReference!=null)
+                if (msCoreReferenceFinder.JsonIgnoreAttributeReference!=null)
                 {
-                    isTrackingProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NotMappedAttributeReference));
+                    isTrackingProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.JsonIgnoreAttributeReference));
                 }
             }
 
@@ -131,9 +131,9 @@ public class ImplementITrackableInjector
             if (!modifiedPropertiesProp.FromBaseClass)
             {
                 modifiedPropertiesProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NonSerializedReference));
-                if (msCoreReferenceFinder.NotMappedAttributeReference != null)
+                if (msCoreReferenceFinder.JsonIgnoreAttributeReference != null)
                 {
-                    modifiedPropertiesProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.NotMappedAttributeReference));
+                    modifiedPropertiesProp.Prop.CustomAttributes.Add(new CustomAttribute(msCoreReferenceFinder.JsonIgnoreAttributeReference));
                 }
             }
 

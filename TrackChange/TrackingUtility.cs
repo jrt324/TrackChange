@@ -1,11 +1,11 @@
 ﻿using System;
 
 /// <summary>
-/// Contains methods for interacting with the Costura system.
+/// Contains methods for interacting with the Tracking system.
 /// </summary>
-public static class CosturaUtility
+public static class TrackingUtility
 {
-    /// <summary>
+    /// <summary>   
     /// Call this to Initialize the Costura system.
     /// </summary>
     public static void Initialize()
