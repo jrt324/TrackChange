@@ -17,20 +17,20 @@ namespace AssemblyToProcess
             get { return k__BackingField; }
             set
             {
-                var isEql = object.Equals(Prop1, value);
-                if (!isEql)
-                {
-                    ModifiedProperties["Prop1"] = true;
-                }
+                // var isEql = object.Equals(Prop1, value);
+                // if (!isEql)
+                // {
+                ModifiedProperties["Prop1"] = !object.Equals(Prop1, value);
+
                 k__BackingField = value;
             }
         }
     }
 
 
-    public class Class2 
+    public class Class2
     {
-       
+
         public Dictionary<string, bool> ModifiedProperties => new Dictionary<string, bool>();
 
         public bool IsTracking { get; set; }
@@ -57,10 +57,10 @@ namespace AssemblyToProcess
     [Tracking]
     public class Class3
     {
-  
+
         public DateTime? Prop1 { get; set; }
 
-    
+
         public string Test2 { get; set; }
 
         public int IntVal1 { get; set; }

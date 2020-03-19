@@ -16,10 +16,12 @@ namespace TestBaseClassLib
             get { return __prop1; }
             set
             {
-                if (Prop1 != value)
-                {
-                    ModifiedProperties["Prop1"] = true;
-                }
+                // if (Prop1 != value)
+                // {
+                //     ModifiedProperties["Prop1"] = true;
+                // }
+                // var isEqual = !object.Equals(__prop1 , value);
+                ModifiedProperties["Prop1"] = !object.Equals(__prop1, value);
                 __prop1 = value;
             }
         }
