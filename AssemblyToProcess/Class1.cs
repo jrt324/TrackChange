@@ -21,7 +21,6 @@ namespace AssemblyToProcess
                 // if (!isEql)
                 // {
                 ModifiedProperties["Prop1"] = !object.Equals(Prop1, value);
-
                 k__BackingField = value;
             }
         }
