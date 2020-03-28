@@ -36,7 +36,7 @@ public class MsCoreReferenceFinder
     {
         try
         {
-            var typeReference = _moduleWeaver.FindType(fullTypeName);
+            var typeReference = _moduleWeaver.FindTypeDefinition(fullTypeName);
             if (typeReference != null)
             {
                 try

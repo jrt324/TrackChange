@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard1.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
 
@@ -11,8 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fody" Version="3.3.5" PrivateAssets="None" />
-    <PackageReference Include="FodyPackaging" Version="3.3.5" PrivateAssets="All" />
+    <PackageReference Include="Fody" Version="6.1.1" PrivateAssets="None" />
+    <PackageReference Include="FodyPackaging" Version="6.1.1" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
